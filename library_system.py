@@ -653,6 +653,57 @@ def edit_category():
 
     btn_append = tk.Button(editwindow, text='Sửa đổi', command=category_e)
     btn_append.place(x=150, y=160)
+
+def edit_book_place():
+    def book_place_e():
+        try:
+            ei = entry_id_bp.get()
+            eb = entry_bp.get()
+            ebn = entry_bp_name.get()
+            conn = connect_db(host='localhost', port=3306, user='root', password='', database='library')
+            cursor = conn.cursor()
+            cursor.execute(
+                'insert into book (book_name, book_author, book_comp, book_id, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s");'
+                % ( ei, eb, ebn))
+            conn.commit()
+            tk.messagebox.showinfo(title='Thông Báo', message='Đã sửa đổi tác giả thành công!')
+        except Exception as e:
+            pass
+        finally:
+           ''' entry_bookname.delete('0', 'end')
+            entry_author.delete('0', 'end')
+            entry_company.delete('0', 'end')
+            entry_place.delete('0', 'end')
+            entry_sumbook.delete('0', 'end')
+            entry_lendbook.delete('0', 'end')
+            cursor.close()
+            conn.close()'''
+    
+    editwindow = tk.Toplevel()
+    editwindow.title('Tác giả')
+    editwindow.geometry('350x200+800+300')
+    editwindow.resizable(0, 0)
+
+    var = tk.StringVar()
+    tk.Label(editwindow, text='ID Vị trí:').place(x=50, y=20)
+    tk.Label(editwindow, text='Tên Vị Trí GS:').place(x=50, y=60)
+    tk.Label(editwindow, text='Tên Giá Sách:').place(x=50, y=100)
+
+    val_ei = tk.StringVar()
+    val_eb = tk.StringVar()
+    val_ebn = tk.StringVar()
+
+    entry_id_bp = tk.Entry(editwindow, textvariable=val_ei)
+    entry_bp = tk.Entry(editwindow, textvariable=val_eb)
+    entry_bp_name = tk.Entry(editwindow, textvariable=val_ebn)
+
+    entry_id.place(x=160, y=20)
+    entry_bp.place(x=160, y=60)
+    entry_bp_name.place(x=160, y=100)
+
+    btn_append = tk.Button(editwindow, text='Sửa đổi', command=book_place_e)
+    btn_append.place(x=150, y=160)
+
 # View logs
 @log
 def book_log():
