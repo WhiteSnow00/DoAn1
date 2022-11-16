@@ -547,9 +547,8 @@ def edit_place():
     val_ead = tk.StringVar()
     val_ep = tk.StringVar()
 
-    
-    entry_publisher = tk.Entry(editwindow, textvariable=val_epl)
     entry_id = tk.Entry(editwindow, textvariable=val_ei)
+    entry_publisher = tk.Entry(editwindow, textvariable=val_epl)
     entry_address = tk.Entry(editwindow, textvariable=val_ead)
     entry_phone = tk.Entry(editwindow, textvariable=val_ep)
 
@@ -641,18 +640,17 @@ def edit_category():
     editwindow.resizable(0, 0)
 
     var = tk.StringVar()
-    tk.Label(editwindow, text='ID Thể Loại:').place(x=50, y=20)
-    tk.Label(editwindow, text='Tên Thể Loại:').place(x=50, y=60)
+    tk.Label(editwindow, text='Tên Thể Loại:').place(x=50, y=20)
+    tk.Label(editwindow, text='ID Thể Loại:').place(x=50, y=60)
 
     val_ec = tk.StringVar()
     val_ei = tk.StringVar()
 
-    entry_author = tk.Entry(editwindow, textvariable=val_ei)
-    entry_id = tk.Entry(editwindow, textvariable=val_ea)
+    entry_category = tk.Entry(editwindow, textvariable=val_ec)
+    entry_id = tk.Entry(editwindow, textvariable=val_ei)
 
-    entry_author.place(x=160, y=20)
+    entry_category.place(x=160, y=20)
     entry_id.place(x=160, y=60)
-    entry_diploma.place(x=160, y=100)
 
     btn_append = tk.Button(editwindow, text='Sửa đổi', command=category_e)
     btn_append.place(x=150, y=160)
@@ -692,7 +690,7 @@ menubar.add_cascade(label='Quản lý danh mục', menu=filemenu)
 filemenu.add_command(label='Nhà xuất bản', command=edit_place)
 filemenu.add_command(label='Tác giả', command=edit_author)
 filemenu.add_command(label='Vị trí sách', command=overuser)
-filemenu.add_command(label='Thể loại sách', command=overuser)
+filemenu.add_command(label='Thể loại sách', command=edit_category)
 
 filemenu = tk.Menu(menubar, tearoff=0)
 menubar.add_cascade(label='Quản lý thẻ', menu=filemenu)
@@ -761,7 +759,7 @@ lb = tk.Listbox(window1, listvariable=var2, width=30)
 
 
 tk.Label(window1, text='\t Mèo méo meo mèo meo',
-         font=('Arial', 8)).place(x=0, y=460, anchor='nw')
+         font=('Arial', 9)).place(x=0, y=460, anchor='nw')
 
 
 userLabel.place(x=30, y=0, anchor='nw')
