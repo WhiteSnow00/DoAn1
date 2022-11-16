@@ -141,10 +141,13 @@ def search_button():
         val = searchEntry.get()
         conn = connect(host='localhost', user='root', password='', database='library')
         cursor = conn.cursor()
-        cursor.execute("select * from book where book_name like '%s%%';" % val)
+        if(val==''):
+            cursor.execute("select * from book where book_name like '%s%%';" % val)
+        else:
+            cursor.execute("select * from book where book_name = '%s' or book_author like '%s' or book_id like '%s';" % (val, val, val))
         result = cursor.fetchall()
         if len(result) == 0:
-            tk.messagebox.showinfo(title='Thông Báo', message='Thư viện đang hết sách, lượn chỗ khác chơi')
+            tk.messagebox.showinfo(title='Hi', message='Thư viện đang hết sách, lượn chỗ khác chơi')
         else:
             for i in range(len(result)):
                 listbook = result[i][0:]
@@ -154,8 +157,7 @@ def search_button():
     except Exception as e:
         pass
     finally:
-        pass
-
+        searchEntry.delete(0,'end')
 
 # Show Books
 def allbook_button():
@@ -300,29 +302,69 @@ def removebook_button():
 # Import books
 @log
 def importbook_button():
+
+    def item_selected(event): # hàm lựa chọn sách trên bảng
+        for selected_item in tree.selection():
+            item = tree.item(selected_item)
+            record = item['values']
+    def add_book_to_db(): # hàm lựa chọn sách trên bảng rồi thêm vào db
+        for selected_item in tree.selection():
+            item = tree.item(selected_item)
+            record = item.get("values")
+            try:
+                eb = record[0]
+                ea = record[1]
+                ec = record[2]
+                ep = record[3]
+                es = record[4]
+                el = record[5]
+                conn = connect(host='localhost', user='root', password='', database='library')
+                cursor = conn.cursor()
+                cursor.execute(
+                    'insert into book (book_name, book_author, book_comp, book_id, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s");'
+                    % (eb, ea, ec, ep, es, el))
+                conn.commit()
+                tk.messagebox.showinfo(title='Hi', message='Thêm sách thành công！')
+            except Exception as e:
+                print(e)
+            finally:
+                pass
+    
+    # Tạo cửa sổ thêm sách
+    importwindow = tk.Toplevel()
+    importwindow.title('Thêm sách')
+    importwindow.geometry('1250x800')
+    importwindow.resizable(1, 0)
+    tree = ttk.Treeview(importwindow, columns=['1', '2', '3', '4', '5', '6'], show='headings', height=90)
+    tree.column('1', width=115, anchor='center')
+    tree.column('2', width=210, anchor='center')
+    tree.column('3', width=210, anchor='center')
+    tree.column('4', width=150, anchor='center')
+    tree.column('5', width=175, anchor='center')
+    tree.column('6', width=175, anchor='center')
+    tree.heading('1', text='Số sách')
+    tree.heading('2', text='Tên sách')
+    tree.heading('3', text='Tác giả')
+    tree.heading('4', text='Nhà xuất bản')
+    tree.heading('5', text='Tồn kho')
+    tree.heading('6', text='Sl có thể mượn')
+    tree.place(x=0, y=0, anchor='nw')
+
+    # Đọc data từ file excel
     data = xlrd.open_workbook('book.xls')
     table = data.sheets()[0]
-    nrows = table.nrows
-    for i in range(nrows-1):
-        li_book = table.row_values(i+1)
+    for i in range(table.nrows-1):
         try:
-            eb = li_book[1]
-            ea = li_book[2]
-            ec = li_book[3]
-            ep = li_book[4]
-            es = li_book[5]
-            el = li_book[6]
-            conn = connect(host='localhost', port=3306, user='root', password='', database='library')
-            cursor = conn.cursor()
-            cursor.execute(
-                'insert into book (book_name, book_author, book_comp, book_id, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s");'
-                % (eb, ea, ec, ep, es, el))
-            conn.commit()
-            tk.messagebox.showinfo(title='Thông Báo', message='Thêm sách thành công！')
+            li_book = table.row_values(i+1)
+            tree.insert('', 'end', value=(li_book[1],li_book[2],li_book[3],li_book[4],li_book[5],li_book[6]))
         except Exception as e:
             pass
-        finally:
-            search_button()
+
+    tree.bind('<<TreeviewSelect>>', item_selected)
+
+    # nút xác nhận chọn sách để đưa vào db
+    btn_select = tk.Button(importwindow, text='Thêm sách chọn', command=add_book_to_db)
+    btn_select.place(x=1100, y=100)
 
 # edit book
 @log
@@ -659,14 +701,14 @@ def edit_book_place():
         try:
             ei = entry_id_bp.get()
             eb = entry_bp.get()
-            ebn = entry_bp_name.get()
+            ebn = entry_bpn.get()
             conn = connect_db(host='localhost', port=3306, user='root', password='', database='library')
             cursor = conn.cursor()
             cursor.execute(
                 'insert into book (book_name, book_author, book_comp, book_id, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s");'
                 % ( ei, eb, ebn))
             conn.commit()
-            tk.messagebox.showinfo(title='Thông Báo', message='Đã sửa đổi tác giả thành công!')
+            tk.messagebox.showinfo(title='Thông Báo', message='Đã sửa đổi vị tri sách thành công!')
         except Exception as e:
             pass
         finally:
@@ -680,7 +722,7 @@ def edit_book_place():
             conn.close()'''
     
     editwindow = tk.Toplevel()
-    editwindow.title('Tác giả')
+    editwindow.title('Vị Trí Sách')
     editwindow.geometry('350x200+800+300')
     editwindow.resizable(0, 0)
 
@@ -695,11 +737,11 @@ def edit_book_place():
 
     entry_id_bp = tk.Entry(editwindow, textvariable=val_ei)
     entry_bp = tk.Entry(editwindow, textvariable=val_eb)
-    entry_bp_name = tk.Entry(editwindow, textvariable=val_ebn)
+    entry_bpn = tk.Entry(editwindow, textvariable=val_ebn)
 
-    entry_id.place(x=160, y=20)
+    entry_id_bp.place(x=160, y=20)
     entry_bp.place(x=160, y=60)
-    entry_bp_name.place(x=160, y=100)
+    entry_bpn.place(x=160, y=100)
 
     btn_append = tk.Button(editwindow, text='Sửa đổi', command=book_place_e)
     btn_append.place(x=150, y=160)
@@ -739,7 +781,7 @@ filemenu = tk.Menu(menubar, tearoff=0)
 menubar.add_cascade(label='Quản lý danh mục', menu=filemenu)
 filemenu.add_command(label='Nhà xuất bản', command=edit_place)
 filemenu.add_command(label='Tác giả', command=edit_author)
-filemenu.add_command(label='Vị trí sách', command=overuser)
+filemenu.add_command(label='Vị trí sách', command=edit_book_place)
 filemenu.add_command(label='Thể loại sách', command=edit_category)
 
 filemenu = tk.Menu(menubar, tearoff=0)
