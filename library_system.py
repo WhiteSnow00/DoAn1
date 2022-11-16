@@ -249,7 +249,7 @@ def returnbook_button():
         for i in range(len(val_lb)):
             b_id = val_lb[i][0]
             b_name = val_lb[i][1]
-            conn = connect(host='localhost', user='root', password='', database='library')
+            conn = connect(host='localhost', port=3306, user='root', password='', database='library')
             cursor = conn.cursor()
             cursor.execute('select returnbook from students where stu_id="%s";' % s_id)
             result_rb = cursor.fetchall()
@@ -264,7 +264,6 @@ def returnbook_button():
             lb.delete('0', 'end')
         cursor.close()
         conn.close()
-
         myFile = open('log.txt', 'a')
         myFile.write('[%s],student<%s>Books on loan《%s》successfully returned！\n' % (time.asctime(), s_name, b_name))
         myFile.close()
@@ -313,7 +312,7 @@ def importbook_button():
             ep = li_book[4]
             es = li_book[5]
             el = li_book[6]
-            conn = connect(host='localhost', user='root', password='', database='library')
+            conn = connect(host='localhost', port=3306, user='root', password='', database='library')
             cursor = conn.cursor()
             cursor.execute(
                 'insert into book (book_name, book_author, book_comp, book_id, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s");'
@@ -738,7 +737,7 @@ searchButton = tk.Button(window1, text='Tìm sách',
                          width=10, height=1, command=search_button)
 
 lendbookButton = tk.Button(window1, text='Mượn sách',
-                         width=10, height=1, command=lend_book)
+                         width=10, height=1, command=lendbook_button)
 
 returnbookButton = tk.Button(window1, text='Trả sách',
                          width=10, height=1, command=returnbook_button)
