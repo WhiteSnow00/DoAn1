@@ -383,7 +383,7 @@ def viewstudent():
         dellist(tree_stu)
         s_id = stu_idEntry.get()
         s_name = stu_nameEntry.get()
-        conn = connect(host='localhost', user='root', password='', database='library')
+        conn = connect(host='localhost', port=3306, user='root', password='', database='library')
         cursor = conn.cursor()
         cursor.execute('select * from borrow where s_id = "%s" and s_name = "%s";' % (s_id, s_name))
         result = cursor.fetchall()
