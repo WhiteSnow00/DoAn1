@@ -90,17 +90,19 @@ def editbook():
 
     def appendbook_button():
         try:
-            eb = entry_bookname.get()
-            ea = entry_author.get()
-            ec = entry_company.get()
-            ep = entry_place.get()
+            ei = entry_book_id.get()
+            eb = entry_book_name.get()
+            ea = entry_book_author.get()
+            ec = entry_category_id.get()
+            ep = entry_publish_year.get()
+            ebp = entry_book_place.get()
             es = entry_sumbook.get()
             el = entry_lendbook.get()
             conn = connect_db(host='localhost', port=3306, user='root', password='', database='library')
             cursor = conn.cursor()
             cursor.execute(
-                'insert into book (book_name, book_author, book_comp, book_id, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s");'
-                % (eb, ea, ec, ep, es, el))
+                'insert into book (book_id, book_name, book_author, category_id, publish_year, book_place, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s");'
+                % (ei, eb, ea, ec, ep, ebp, es, el))
             conn.commit()
             tk.messagebox.showinfo(title='Hi', message='Sách đã được thêm thành công!')
         except Exception as e:

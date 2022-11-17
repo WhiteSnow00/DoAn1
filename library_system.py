@@ -369,7 +369,7 @@ def importbook_button():
     tree.bind('<<TreeviewSelect>>', item_selected)
 
     # nút xác nhận chọn sách để đưa vào db
-    btn_select = tk.Button(importwindow, text='Thêm sách chọn', command=add_book_to_db)
+    btn_select = tk.Button(importwindow, text='Nhập sách', command=add_book_to_db)
     btn_select.place(x=1100, y=100)
 
 # edit book
@@ -450,17 +450,19 @@ def lend_book():
 
     def appendbook_button():
         try:
-            eb = entry_bookname.get()
-            ea = entry_author.get()
-            ec = entry_company.get()
-            ep = entry_place.get()
+            ei = entry_book_id.get()
+            eb = entry_book_name.get()
+            ea = entry_book_author.get()
+            ec = entry_category_id.get()
+            ep = entry_publish_year.get()
+            ebp = entry_book_place.get()
             es = entry_sumbook.get()
             el = entry_lendbook.get()
             conn = connect_db(host='localhost', port=3306, user='root', password='', database='library')
             cursor = conn.cursor()
             cursor.execute(
                 'insert into book (book_id, book_name, book_author, category_id, publish_year, book_place, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s");'
-                % (eb, ea, ec, ep, es, el))
+                % (ei, eb, ea, ec, ep, ebp, es, el))
             conn.commit()
             tk.messagebox.showinfo(title='Thông Báo', message='Sách đã được cho mượn thành công!')
         except Exception as e:
@@ -617,7 +619,7 @@ def edit_author():
             cursor = conn.cursor()
             cursor.execute(
                 'insert into book (book_id, book_name, book_author, category_id, publish_year, book_place, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s");'
-                % (ea, ei, ead, ep))
+                % (ei, ea, ed))
             conn.commit()
             tk.messagebox.showinfo(title='Thông Báo', message='Đã sửa đổi tác giả thành công!')
         except Exception as e:
@@ -773,7 +775,7 @@ def overuser():
 
 window1 = tk.Tk()
 window1.title('Hệ thống quản lý thư viện')
-window1.geometry('1280x720')
+window1.geometry('1600x900')
 window1.resizable(1, 0)
 
 menubar = tk.Menu(window1)
