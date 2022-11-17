@@ -780,10 +780,14 @@ window1.resizable(1, 0)
 
 menubar = tk.Menu(window1)
 
+def Close():
+    window1.destroy()
+
 filemenu = tk.Menu(menubar, tearoff=0)
-menubar.add_cascade(label='Quản trị', menu=filemenu)
+menubar.add_cascade(label='Home', menu=filemenu)
 filemenu.add_command(label='Đăng nhập', command=loginuser)
 filemenu.add_command(label='Đăng xuất', command=overuser)
+filemenu.add_command(label='Exit', command=Close)
 
 filemenu = tk.Menu(menubar, tearoff=0)
 menubar.add_cascade(label='Quản lý danh mục', menu=filemenu)
@@ -798,6 +802,13 @@ filemenu.add_command(label='Làm thẻ thư viện', command=loginuser)
 filemenu.add_command(label='Cấp lại thẻ', command=overuser)
 filemenu.add_command(label='Tra cứu thẻ', command=overuser)
 
+filemenu = tk.Menu(menubar, tearoff=0)
+menubar.add_cascade(label='Quản lý sách', menu=filemenu)
+filemenu.add_command(label='Tạo đầu sách', command=empty)
+filemenu.add_command(label='Tra cứu đầu sách', command=empty)
+filemenu.add_command(label='Lập Đơn Mua Sách', command=importbook_button)
+filemenu.add_command(label='Lập Đơn Hủy Sách', command=empty)
+
 editmenu = tk.Menu(menubar, tearoff=0)
 menubar.add_cascade(label='Sửa', menu=editmenu)
 # editmenu.add_command(label='edit_reader', command=editreader_button)
@@ -808,6 +819,7 @@ menubar.add_cascade(label='Log', menu=notemenu)
 notemenu.add_command(label='Thống kê số lượt mượn sách', command=empty)
 notemenu.add_command(label='Thống kê số lượng sách có thể cho mượn', command=empty)
 notemenu.add_command(label='Xem danh sách mượn quá hạn', command=overtime)
+notemenu.add_command(label='Thống kê độc giả', command=empty)
 notemenu.add_command(label='Xem log', command=book_log)
 
 
