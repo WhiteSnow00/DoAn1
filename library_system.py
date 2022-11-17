@@ -300,7 +300,7 @@ def removebook_button():
         pass
 
 # Import books
-@log
+#@log
 def importbook_button():
 
     def item_selected(event): # hàm lựa chọn sách trên bảng
@@ -318,11 +318,13 @@ def importbook_button():
                 ep = record[3]
                 es = record[4]
                 el = record[5]
+                et = record[6]
+                ek = record[7]
                 conn = connect(host='localhost', user='root', password='', database='library')
                 cursor = conn.cursor()
                 cursor.execute(
-                    'insert into book (book_name, book_author, book_comp, book_id, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s");'
-                    % (eb, ea, ec, ep, es, el))
+                    'insert into book (book_id, book_name, book_author, category_id, publish_year, book_place, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s");'
+                    % (eb, ea, ec, ep, es, el,et,ek))
                 conn.commit()
                 tk.messagebox.showinfo(title='Hi', message='Thêm sách thành công！')
             except Exception as e:
@@ -335,19 +337,23 @@ def importbook_button():
     importwindow.title('Thêm sách')
     importwindow.geometry('1250x800')
     importwindow.resizable(1, 0)
-    tree = ttk.Treeview(importwindow, columns=['1', '2', '3', '4', '5', '6'], show='headings', height=90)
+    tree = ttk.Treeview(importwindow, columns=['1', '2', '3', '4', '5', '6', '7', '8'], show='headings', height=90)
     tree.column('1', width=115, anchor='center')
-    tree.column('2', width=210, anchor='center')
-    tree.column('3', width=210, anchor='center')
-    tree.column('4', width=150, anchor='center')
-    tree.column('5', width=175, anchor='center')
-    tree.column('6', width=175, anchor='center')
+    tree.column('2', width=130, anchor='center')
+    tree.column('3', width=130, anchor='center')
+    tree.column('4', width=130, anchor='center')
+    tree.column('5', width=145, anchor='center')
+    tree.column('6', width=145, anchor='center')
+    tree.column('7', width=145, anchor='center')
+    tree.column('8', width=145, anchor='center')
     tree.heading('1', text='Số sách')
     tree.heading('2', text='Tên sách')
     tree.heading('3', text='Tác giả')
-    tree.heading('4', text='Nhà xuất bản')
-    tree.heading('5', text='Tồn kho')
-    tree.heading('6', text='Sl có thể mượn')
+    tree.heading('4', text='ID Thể Loại')
+    tree.heading('5', text='Năm xuất bản')
+    tree.heading('6', text='Vị trí giá sách')
+    tree.heading('7', text='Tồn kho')
+    tree.heading('8', text='Sl có thể mượn')
     tree.place(x=0, y=0, anchor='nw')
 
     # Đọc data từ file excel
@@ -356,7 +362,7 @@ def importbook_button():
     for i in range(table.nrows-1):
         try:
             li_book = table.row_values(i+1)
-            tree.insert('', 'end', value=(li_book[1],li_book[2],li_book[3],li_book[4],li_book[5],li_book[6]))
+            tree.insert('', 'end', value=(li_book[1],li_book[2],li_book[3],li_book[4],li_book[5],li_book[6],li_book[7],li_book[8]))
         except Exception as e:
             pass
 
@@ -453,7 +459,7 @@ def lend_book():
             conn = connect_db(host='localhost', port=3306, user='root', password='', database='library')
             cursor = conn.cursor()
             cursor.execute(
-                'insert into book (book_name, book_author, book_comp, book_id, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s");'
+                'insert into book (book_id, book_name, book_author, category_id, publish_year, book_place, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s");'
                 % (eb, ea, ec, ep, es, el))
             conn.commit()
             tk.messagebox.showinfo(title='Thông Báo', message='Sách đã được cho mượn thành công!')
@@ -532,7 +538,7 @@ def overtime():
         tree_stu.place(x=0, y=0, anchor='nw')
 
         dellist(tree_stu)
-        conn = connect(host='localhost', user='root', password='', database='library')
+        conn = connect(host='localhost', port=3306, user='root', password='', database='library')
         cursor = conn.cursor()
         cursor.execute("select * from borrow where return_date < curdate();")
         result = cursor.fetchall()
@@ -556,7 +562,7 @@ def edit_place():
             conn = connect_db(host='localhost', port=3306, user='root', password='', database='library')
             cursor = conn.cursor()
             cursor.execute(
-                'insert into book (book_name, book_author, book_comp, book_id, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s");'
+                'insert into book (book_id, book_name, book_author, category_id, publish_year, book_place, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s");'
                 % (epl, ei, ead, ep))
             conn.commit()
             tk.messagebox.showinfo(title='Thông Báo', message='Đã sửa đổi tác giả thành công!')
@@ -610,7 +616,7 @@ def edit_author():
             conn = connect_db(host='localhost', port=3306, user='root', password='', database='library')
             cursor = conn.cursor()
             cursor.execute(
-                'insert into book (book_name, book_author, book_comp, book_id, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s");'
+                'insert into book (book_id, book_name, book_author, category_id, publish_year, book_place, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s");'
                 % (ea, ei, ead, ep))
             conn.commit()
             tk.messagebox.showinfo(title='Thông Báo', message='Đã sửa đổi tác giả thành công!')
@@ -659,7 +665,7 @@ def edit_category():
             conn = connect_db(host='localhost', port=3306, user='root', password='', database='library')
             cursor = conn.cursor()
             cursor.execute(
-                'insert into book (book_name, book_author, book_comp, book_id, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s");'
+                'insert into book (book_id, book_name, book_author, category_id, publish_year, book_place, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s");'
                 % (ei, ec))
             conn.commit()
             tk.messagebox.showinfo(title='Thông Báo', message='Đã sửa đổi thể loại sách thành công!')
@@ -705,7 +711,7 @@ def edit_book_place():
             conn = connect_db(host='localhost', port=3306, user='root', password='', database='library')
             cursor = conn.cursor()
             cursor.execute(
-                'insert into book (book_name, book_author, book_comp, book_id, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s");'
+                'insert into book (book_id, book_name, book_author, category_id, publish_year, book_place, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s");'
                 % ( ei, eb, ebn))
             conn.commit()
             tk.messagebox.showinfo(title='Thông Báo', message='Đã sửa đổi vị tri sách thành công!')
@@ -803,19 +809,23 @@ notemenu.add_command(label='Xem danh sách mượn quá hạn', command=overtime
 notemenu.add_command(label='Xem log', command=book_log)
 
 
-tree = ttk.Treeview(window1, columns=['1', '2', '3', '4', '5', '6'], show='headings', height=90)
+tree = ttk.Treeview(window1, columns=['1', '2', '3', '4', '5', '6', '7', '8'], show='headings', height=90)
 tree.column('1', width=115, anchor='center')
 tree.column('2', width=175, anchor='center')
 tree.column('3', width=100, anchor='center')
 tree.column('4', width=150, anchor='center')
 tree.column('5', width=175, anchor='center')
 tree.column('6', width=175, anchor='center')
+tree.column('7', width=175, anchor='center')
+tree.column('8', width=175, anchor='center')
 tree.heading('1', text='Số sách')
 tree.heading('2', text='Tên sách')
 tree.heading('3', text='Tác giả')
 tree.heading('4', text='Nhà xuất bản')
-tree.heading('5', text='Tồn kho')
-tree.heading('6', text='Sl có thể mượn')
+tree.heading('5', text='Nhà xuất bản')
+tree.heading('6', text='Nhà xuất bản')
+tree.heading('7', text='Tồn kho')
+tree.heading('8', text='Sl có thể mượn')
 
 tree.bind('<Double-1>', treeviewClick)
 
