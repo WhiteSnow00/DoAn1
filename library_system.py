@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from pymysql import *
 from windowui import *
+from main import *
 import pickle
 import xlrd
 from tkinter import messagebox
@@ -673,7 +674,7 @@ def edit_author():
     btn_append = tk.Button(editwindow, text='Sửa đổi', command=author_e)
     btn_append.place(x=150, y=160)
 
-def overtime1():
+def publisher_1():
     try:
         global listbook
         stuwindow = tk.Toplevel()
@@ -681,13 +682,7 @@ def overtime1():
         stuwindow.geometry('900x300+550+300')
         stuwindow.resizable(0,0)
         tree_stu = ttk.Treeview(stuwindow, columns=['1', '2', '3', '4'], show='headings',selectmode='browse', height=14)
-        tree.pack(side='left')
 
-        vsb = ttk.Scrollbar(stuwindow, orient="vertical", command=tree_stu.yview)
-        vsb.pack(side='right', fill='y')
-
-        tree.configure(yscrollcommand=vsb.set)
-        
         tree_stu.column('1', width=100, anchor='center')
         tree_stu.column('2', width=150, anchor='center')
         tree_stu.column('3', width=150, anchor='center')
@@ -702,6 +697,7 @@ def overtime1():
         pass
     finally:
         pass
+    
     var = tk.StringVar()
     tk.Label(stuwindow, text='ID nxb:').place(x=600, y=20)
     tk.Label(stuwindow, text='Tên nxb:').place(x=600, y=60)
@@ -730,6 +726,142 @@ def overtime1():
     btn_append.place(x=740, y=220)
     btn_append = tk.Button(stuwindow, text='Xóa',width=6, command=empty)
     btn_append.place(x=810, y=220)
+
+def author_1():
+    try:
+        global listbook
+        stuwindow = tk.Toplevel()
+        stuwindow.title('Sửa Tác giả')
+        stuwindow.geometry('700x300+550+300')
+        stuwindow.resizable(0,0)
+        tree_stu = ttk.Treeview(stuwindow, columns=['1', '2', '3'], show='headings',selectmode='browse', height=14)
+
+        tree_stu.column('1', width=100, anchor='center')
+        tree_stu.column('2', width=150, anchor='center')
+        tree_stu.column('3', width=150, anchor='center')
+        tree_stu.heading('1', text='ID Tác Giả')
+        tree_stu.heading('2', text='Tên Tác Giả')
+        tree_stu.heading('3', text='Bằng cấp')
+
+        tree_stu.place(x=0, y=0, anchor='nw')
+    except Exception as e:
+        pass
+    finally:
+        pass
+    
+    var = tk.StringVar()
+    tk.Label(stuwindow, text='ID Tác Giả:').place(x=460, y=20)
+    tk.Label(stuwindow, text='Tên Tác Giả:').place(x=460, y=60)
+    tk.Label(stuwindow, text='Bằng Cấp:').place(x=460, y=100)
+
+    val_ei = tk.StringVar()
+    val_epl = tk.StringVar()
+    val_ead = tk.StringVar()
+
+    entry_id = tk.Entry(stuwindow, textvariable=val_ei)
+    entry_publisher = tk.Entry(stuwindow, textvariable=val_epl)
+    entry_address = tk.Entry(stuwindow, textvariable=val_ead)
+
+    entry_publisher.place(x=550, y=20)
+    entry_id.place(x=550, y=60)
+    entry_address.place(x=550, y=100)
+    btn_append = tk.Button(stuwindow, text='Tìm',width=6, command=empty)
+    btn_append.place(x=430, y=220)
+    btn_append = tk.Button(stuwindow, text='Thêm',width=6, command=empty)
+    btn_append.place(x=500, y=220)
+    btn_append = tk.Button(stuwindow, text='Sửa',width=6, command=empty)
+    btn_append.place(x=570, y=220)
+    btn_append = tk.Button(stuwindow, text='Xóa',width=6, command=empty)
+    btn_append.place(x=640, y=220)
+
+def place_1():
+    try:
+        global listbook
+        stuwindow = tk.Toplevel()
+        stuwindow.title('Sửa Vị Trí')
+        stuwindow.geometry('700x300+550+300')
+        stuwindow.resizable(0,0)
+        tree_stu = ttk.Treeview(stuwindow, columns=['1', '2', '3'], show='headings',selectmode='browse', height=14)
+
+        tree_stu.column('1', width=100, anchor='center')
+        tree_stu.column('2', width=150, anchor='center')
+        tree_stu.column('3', width=150, anchor='center')
+        tree_stu.heading('1', text='ID Vị Trí')
+        tree_stu.heading('2', text='Tên Vị Trí')
+        tree_stu.heading('3', text='Tên Giá Sách')
+
+        tree_stu.place(x=0, y=0, anchor='nw')
+    except Exception as e:
+        pass
+    finally:
+        pass
+    
+    var = tk.StringVar()
+    tk.Label(stuwindow, text='ID Vị Trí:').place(x=460, y=20)
+    tk.Label(stuwindow, text='Tên Vị Trí:').place(x=460, y=60)
+    tk.Label(stuwindow, text='Tên Giá Sách:').place(x=460, y=100)
+
+    val_ei = tk.StringVar()
+    val_epl = tk.StringVar()
+    val_ead = tk.StringVar()
+
+    entry_id = tk.Entry(stuwindow, textvariable=val_ei)
+    entry_publisher = tk.Entry(stuwindow, textvariable=val_epl)
+    entry_address = tk.Entry(stuwindow, textvariable=val_ead)
+
+    entry_publisher.place(x=550, y=20)
+    entry_id.place(x=550, y=60)
+    entry_address.place(x=550, y=100)
+    btn_append = tk.Button(stuwindow, text='Tìm',width=6, command=empty)
+    btn_append.place(x=430, y=220)
+    btn_append = tk.Button(stuwindow, text='Thêm',width=6, command=empty)
+    btn_append.place(x=500, y=220)
+    btn_append = tk.Button(stuwindow, text='Sửa',width=6, command=empty)
+    btn_append.place(x=570, y=220)
+    btn_append = tk.Button(stuwindow, text='Xóa',width=6, command=empty)
+    btn_append.place(x=640, y=220)
+
+def category_1():
+    try:
+        global listbook
+        stuwindow = tk.Toplevel()
+        stuwindow.title('Sửa Vị Trí')
+        stuwindow.geometry('700x300+550+300')
+        stuwindow.resizable(0,0)
+        tree_stu = ttk.Treeview(stuwindow, columns=['1', '2'], show='headings',selectmode='browse', height=14)
+
+        tree_stu.column('1', width=100, anchor='center')
+        tree_stu.column('2', width=150, anchor='center')
+        tree_stu.heading('1', text='ID Thể Loại')
+        tree_stu.heading('2', text='Tên Thể Loại')
+
+        tree_stu.place(x=0, y=0, anchor='nw')
+    except Exception as e:
+        pass
+    finally:
+        pass
+    
+    var = tk.StringVar()
+    tk.Label(stuwindow, text='ID Thể Loại:').place(x=300, y=20)
+    tk.Label(stuwindow, text='Tên Thể Loại:').place(x=300, y=60)
+
+    val_ei = tk.StringVar()
+    val_epl = tk.StringVar()
+    val_ead = tk.StringVar()
+
+    entry_id = tk.Entry(stuwindow, textvariable=val_ei)
+    entry_publisher = tk.Entry(stuwindow, textvariable=val_epl)
+
+    entry_publisher.place(x=450, y=20)
+    entry_id.place(x=450, y=60)
+    btn_append = tk.Button(stuwindow, text='Tìm',width=6, command=empty)
+    btn_append.place(x=350, y=220)
+    btn_append = tk.Button(stuwindow, text='Thêm',width=6, command=empty)
+    btn_append.place(x=420, y=220)
+    btn_append = tk.Button(stuwindow, text='Sửa',width=6, command=empty)
+    btn_append.place(x=490, y=220)
+    btn_append = tk.Button(stuwindow, text='Xóa',width=6, command=empty)
+    btn_append.place(x=560, y=220)
 
 def edit_category():
     def category_e():
@@ -864,10 +996,10 @@ filemenu.add_command(label='Exit', command=Close)
 
 filemenu = tk.Menu(menubar, tearoff=0)
 menubar.add_cascade(label='Quản lý danh mục', menu=filemenu)
-filemenu.add_command(label='Quản lý nhà xuất bản', command=edit_place)
-filemenu.add_command(label='Quản Lý tác giả', command=edit_author)
-filemenu.add_command(label='Quản Lý thể loại sách', command=edit_category)
-filemenu.add_command(label='Quản Lý vị trí giá sách', command=edit_book_place)
+filemenu.add_command(label='Quản lý nhà xuất bản', command=publisher_1)
+filemenu.add_command(label='Quản Lý tác giả', command=author_1)
+filemenu.add_command(label='Quản Lý thể loại sách', command=category_1)
+filemenu.add_command(label='Quản Lý vị trí giá sách', command=place_1)
 
 filemenu = tk.Menu(menubar, tearoff=0)
 menubar.add_cascade(label='Quản lý độc giả', menu=filemenu)
@@ -896,18 +1028,18 @@ notemenu = tk.Menu(menubar, tearoff=0)
 menubar.add_cascade(label='Báo Cáo/Thống Kê', menu=notemenu)
 notemenu.add_command(label='Thống kê số lượt mượn sách', command=empty)
 notemenu.add_command(label='Thống kê số lượng sách có thể cho mượn', command=empty)
-notemenu.add_command(label='Xem danh sách mượn quá hạn', command=overtime1)
+notemenu.add_command(label='Xem danh sách mượn quá hạn', command=overtime)
 notemenu.add_command(label='Thống kê độc giả', command=empty)
 notemenu.add_command(label='Xem log', command=book_log)
 
 
 tree = ttk.Treeview(window1, columns=['1', '2', '3', '4', '5', '6', '7', '8'], show='headings',selectmode='browse', height=90)
-tree.pack(side='left')
+'''tree.pack(side='left')
 
 vsb = ttk.Scrollbar(window1, orient="vertical", command=tree.yview)
 vsb.pack(side='right', fill='y')
 
-tree.configure(yscrollcommand=vsb.set)
+tree.configure(yscrollcommand=vsb.set)'''
 
 tree.column('1', width=115, anchor='center')
 tree.column('2', width=175, anchor='center')
@@ -925,6 +1057,12 @@ tree.heading('5', text='Năm xuất bản')
 tree.heading('6', text='Vị Trí')
 tree.heading('7', text='Tồn kho')
 tree.heading('8', text='Sl có thể mượn')
+
+treeScroll = ttk.Scrollbar(window1)
+treeScroll.configure(command=tree.yview)
+tree.configure(yscrollcommand=treeScroll.set)
+treeScroll.pack(side= RIGHT, fill= BOTH)
+tree.pack()
 
 tree.bind('<Double-1>', treeviewClick)
 

@@ -1,35 +1,35 @@
+from tkinter import *
 from tkinter import ttk
-import tkinter as tk
 
-win = tk.Tk()
-win.minsize(width=300, height=400)
-win.resizable(width=0, height=0)
+# Create an instance of tkinter frame
+win= Tk()
 
-tree = ttk.Treeview(win, selectmode='browse')
-tree.place(x=30, y=95)
+# Set the size of the tkinter window
+win.geometry("700x350")
 
-vsb = ttk.Scrollbar(win, orient="vertical", command=tree.yview)
-vsb.place(x=30+200+2, y=95, height=200+20)
+# Add a Treeview widget and set the selection mode
+tree= ttk.Treeview(win, column=("c1", "c2"), show='headings', height= 8, selectmode="browse")
+tree.column("#1", anchor=CENTER, stretch= NO)
+tree.heading("#1", text="Fname")
+tree.column("#2", anchor=CENTER, stretch=NO)
+tree.heading("#2", text="Lname")
 
-tree.configure(yscrollcommand=vsb.set)
+# Insert the data in Treeview widget
+tree.insert('', 'end', text= "1",values=('Alex', 'M'))
+tree.insert('', 'end', text="2",values=('Belinda','Cross'))
+tree.insert('', 'end', text="3",values=('Ravi','Malviya'))
+tree.insert('', 'end', text="4",values=('Suresh','Rao'))
+tree.insert('', 'end', text="5",values=('Amit','Fernandiz'))
+tree.insert('', 'end', text= "6",values=('Raghu','Sharma'))
+tree.insert('', 'end',text= "7",values=('David','Nash'))
+tree.insert('', 'end',text= "8",values=('Ethan','Plum'))
+tree.insert('', 'end', text= "9", values=('Janiece','-'))
 
-tree["columns"] = ("1", "2")
-tree['show'] = 'headings'
-tree.column("1", width=100, anchor='c')
-tree.column("2", width=100, anchor='c')
-tree.heading("1", text="Account")
-tree.heading("2", text="Type")
-tree.insert("",'end',text="L1",values=("Big1","Best"))
-tree.insert("",'end',text="L2",values=("Big2","Best"))
-tree.insert("",'end',text="L3",values=("Big3","Best"))
-tree.insert("",'end',text="L4",values=("Big4","Best"))
-tree.insert("",'end',text="L5",values=("Big5","Best"))
-tree.insert("",'end',text="L6",values=("Big6","Best"))
-tree.insert("",'end',text="L7",values=("Big7","Best"))
-tree.insert("",'end',text="L8",values=("Big8","Best"))
-tree.insert("",'end',text="L9",values=("Big9","Best"))
-tree.insert("",'end',text="L10",values=("Big10","Best"))
-tree.insert("",'end',text="L11",values=("Big11","Best"))
-tree.insert("",'end',text="L12",values=("Big12","Best"))
+# Adding a vertical scrollbar to Treeview widget
+treeScroll = ttk.Scrollbar(win)
+treeScroll.configure(command=tree.yview)
+tree.configure(yscrollcommand=treeScroll.set)
+treeScroll.pack(side= RIGHT, fill= BOTH)
+tree.pack()
 
 win.mainloop()
