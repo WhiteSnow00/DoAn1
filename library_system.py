@@ -137,14 +137,13 @@ def usr():
 # Find books
 def search_button():
     try:
-        global listbook
         dellist(tree)
         val = searchEntry.get()
         if (str(val).isnumeric()):
-            values = get_book_by_id(val)
+            values = get_object_by_id('book', val)
         else:
-            values = get_books_by_name(val)
-        if len(values) == 0:
+            values = get_objects_by_name('book', val)
+        if (not values or len(values) == 0):
             tk.messagebox.showinfo(title='Hi', message='Không có sách như tìm kiếm')
         else:
             results = []
@@ -182,41 +181,43 @@ def allbook_button():
 @log
 def lendbook_button():
     try:
-        sql1 = 'begin;'
-        sql2 = 'insert into borrow (s_id, s_name, b_id, b_name, borrow_date, return_date) values ("%s", "%s", "%s", "%s", curdate(), date_add(curdate(), interval 1 month));'
-        sql3 = 'update students set returnbook = returnbook + 1 where stu_id = "%s" and returnbook < 10;'
-        sql4 = 'update book set lendbook = lendbook - 1 where book_id = "%s" and lendbook > 0;'
-        sql5 = 'commit;'
-        s_id = stu_idEntry.get()
-        s_name = stu_nameEntry.get()
-        val_lb = lb.get('0', 'end')
-        for i in range(len(val_lb)):
-            b_id = val_lb[i][0]
-            b_name = val_lb[i][1]
-            conn = connect(host='localhost', user='root', password='', database='library')
-            cursor = conn.cursor()
-            cursor.execute('select returnbook from students where stu_id="%s";' % s_id)
-            result_rb = cursor.fetchall()
-            cursor.execute('select lendbook from book where book_id="%s";' % b_id)
-            result_lb = cursor.fetchall()
-            if int(result_rb[0][0]) > 9:
-                tk.messagebox.showwarning(title='Thông Báo', message=('the student<%s> borrow limit has been reached!' % s_name))
-            elif int(result_lb[0][0]) < 1:
-                tk.messagebox.showwarning(title='Thông Báo', message=('the book《%s》is borrowed！' % b_name))
-            else:
-                cursor.execute(sql1)
-                cursor.execute(sql2 % (s_id, s_name, b_id, b_name))
-                cursor.execute(sql3 % s_id)
-                cursor.execute(sql4 % b_id)
-                cursor.execute(sql5)
-                conn.commit()
-                lb.delete('0', 'end')
-                tk.messagebox.showinfo(title='Thông Báo', message=('books《%s》successfully loaned to students <%s>！' % (b_name, s_name)))
-            cursor.close()
-            conn.close()
-            myFile = open('log.txt', 'a')
-            myFile.write('[%s],books《%s》successfully loaned to students<%s>！\n' % (time.asctime(), b_name, s_name))
-            myFile.close()
+        val = searchEntry.get()
+        print('lend')
+        # sql1 = 'begin;'
+        # sql2 = 'insert into borrow (s_id, s_name, b_id, b_name, borrow_date, return_date) values ("%s", "%s", "%s", "%s", curdate(), date_add(curdate(), interval 1 month));'
+        # sql3 = 'update students set returnbook = returnbook + 1 where stu_id = "%s" and returnbook < 10;'
+        # sql4 = 'update book set lendbook = lendbook - 1 where book_id = "%s" and lendbook > 0;'
+        # sql5 = 'commit;'
+        # s_id = stu_idEntry.get()
+        # s_name = stu_nameEntry.get()
+        # val_lb = lb.get('0', 'end')
+        # for i in range(len(val_lb)):
+        #     b_id = val_lb[i][0]
+        #     b_name = val_lb[i][1]
+        #     conn = connect(host='localhost', user='root', password='', database='library')
+        #     cursor = conn.cursor()
+        #     cursor.execute('select returnbook from students where stu_id="%s";' % s_id)
+        #     result_rb = cursor.fetchall()
+        #     cursor.execute('select lendbook from book where book_id="%s";' % b_id)
+        #     result_lb = cursor.fetchall()
+        #     if int(result_rb[0][0]) > 9:
+        #         tk.messagebox.showwarning(title='Thông Báo', message=('the student<%s> borrow limit has been reached!' % s_name))
+        #     elif int(result_lb[0][0]) < 1:
+        #         tk.messagebox.showwarning(title='Thông Báo', message=('the book《%s》is borrowed！' % b_name))
+        #     else:
+        #         cursor.execute(sql1)
+        #         cursor.execute(sql2 % (s_id, s_name, b_id, b_name))
+        #         cursor.execute(sql3 % s_id)
+        #         cursor.execute(sql4 % b_id)
+        #         cursor.execute(sql5)
+        #         conn.commit()
+        #         lb.delete('0', 'end')
+        #         tk.messagebox.showinfo(title='Thông Báo', message=('books《%s》successfully loaned to students <%s>！' % (b_name, s_name)))
+        #     cursor.close()
+        #     conn.close()
+        #     myFile = open('log.txt', 'a')
+        #     myFile.write('[%s],books《%s》successfully loaned to students<%s>！\n' % (time.asctime(), b_name, s_name))
+        #     myFile.close()
     except IntegrityError as e:
         sign_up_stu = tk.messagebox.askyesno(title='Thông Báo', message='Học sinh chưa có trong hệ thống, có muốn thêm không?')
         if sign_up_stu is True:
@@ -308,31 +309,13 @@ def importbook_button():
         for selected_item in tree.selection():
             item = tree.item(selected_item)
             record = item.get("values")
+            record[0] = str(record[0])
             try:
-                print('record')
-                print(record)
-                # eb = record[0]
-                # ea = record[1]
-                # ec = record[2]
-                # ep = record[3]
-                # es = record[4]
-                # el = record[5]
-                # et = record[6]
-                # ek = record[7]
-                # em = record[8]
-                # et = record[9]
-                # conn = connect(host='localhost', user='root', password='', database='library')
-                # cursor = conn.cursor()
-                # cursor.execute(
-                #     'insert into book (book_id, book_name, book_author, category_id, publish_year, book_place, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s");'
-                #     % (eb, ea, ec, ep, es, el,et,ek))
-                # conn.commit()
-                # values = ['11', ea, ec, ep, es, el, et, ek, em, et]
-                values = ['11', 'test', '3', '5', '2', '100', '2000', 'Tốt', '10', '80000']
-                # for i in range(10):
-                #     values.append(record[i])
-                append_book(values)
-                tk.messagebox.showinfo(title='Hi', message='Thêm sách thành công!')
+                result = append_object('book', record)
+                if (result):
+                    tk.messagebox.showinfo(title='Hi', message='Thêm sách thành công!')
+                else:
+                    tk.messagebox.showerror(title='Hi', message='Thêm sách thất bại!')
             except Exception as e:
                 print(e)
             finally:
@@ -368,13 +351,18 @@ def importbook_button():
 
     # Đọc data từ file excel
     data = xlrd.open_workbook('book.xls')
-    table = data.sheets()[0]
-    print(table)
-    for i in range(table.nrows-1):
+    sheet = data.sheet_by_index(0)
+    for row in range(1, sheet.nrows):
+        row_values = ()
+        for cell in range(sheet.ncols):
+            cell_value = sheet.row_values(row)[cell]
+            if (isinstance(cell_value, float)):
+                row_values += (int(cell_value),)
+            else:
+                row_values += (cell_value,)
         try:
-            li_book = table.row_values(i+1)
-            tree.insert('', 'end', value=(li_book[1],li_book[2],li_book[3],li_book[4],li_book[5],li_book[6],li_book[7],li_book[8],li_book[9],li_book[10]))
-        except Exception as e:
+            tree.insert('', tk.END, values=row_values)
+        except Exception:
             pass
 
     tree.bind('<<TreeviewSelect>>', item_selected)
@@ -456,26 +444,45 @@ def viewstudent():
     finally:
         pass
 
-@log
+#@log
 def lend_book():
+
+    def toggle(button, state):
+        if (button["state"] == "normal" and state == 'disabled'):
+            button["state"] = "disabled"
+            button["text"] = "enable"
+        if (button["state"] == "disabled" and state == 'enabled'):
+            button["state"] = "normal"
+            button["text"] = "disable"
+
+    def checklc_button():
+        values = get_object_by_id('lc', entry_card_id.get())
+        if (not values):
+            tk.messagebox.showerror(title='Error', message='Thẻ thư viện không hợp lệ!')
+            toggle(btn_append, 'disabled')
+        else:
+            tk.messagebox.showinfo(title='Thông Báo', message='Thẻ thư viện hợp lệ!')
+            toggle(btn_append, 'enabled')     
+
 
     def appendbook_button():
         try:
-            ei = entry_book_id.get()
-            eb = entry_book_name.get()
-            ea = entry_book_author.get()
-            ec = entry_category_id.get()
-            ep = entry_publish_year.get()
-            ebp = entry_book_place.get()
-            es = entry_sumbook.get()
-            el = entry_lendbook.get()
-            conn = connect_db(host='localhost', port=3306, user='root', password='', database='library')
-            cursor = conn.cursor()
-            cursor.execute(
-                'insert into book (book_id, book_name, book_author, category_id, publish_year, book_place, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s");'
-                % (ei, eb, ea, ec, ep, ebp, es, el))
-            conn.commit()
-            tk.messagebox.showinfo(title='Thông Báo', message='Sách đã được cho mượn thành công!')
+            print('appendbook')
+            # ei = entry_book_id.get()
+            # eb = entry_book_name.get()
+            # ea = entry_book_author.get()
+            # ec = entry_category_id.get()
+            # ep = entry_publish_year.get()
+            # ebp = entry_book_place.get()
+            # es = entry_sumbook.get()
+            # el = entry_lendbook.get()
+            # conn = connect_db(host='localhost', port=3306, user='root', password='', database='library')
+            # cursor = conn.cursor()
+            # cursor.execute(
+            #     'insert into book (book_id, book_name, book_author, category_id, publish_year, book_place, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s");'
+            #     % (ei, eb, ea, ec, ep, ebp, es, el))
+            # conn.commit()
+            # tk.messagebox.showinfo(title='Thông Báo', message='Sách đã được cho mượn thành công!')
         except Exception as e:
             pass
         finally:
@@ -494,36 +501,35 @@ def lend_book():
     editwindow.resizable(0, 0)
 
     var = tk.StringVar()
-    tk.Label(editwindow, text='Mã sv:').place(x=50, y=20)
-    tk.Label(editwindow, text='Tên sv:').place(x=50, y=60)
-    tk.Label(editwindow, text='Mã sách:').place(x=50, y=100)
-    tk.Label(editwindow, text='Tên sách:').place(x=50, y=140)
-    tk.Label(editwindow, text='Ngày mượn:').place(x=50, y=180)
-    tk.Label(editwindow, text='Ngày trả:').place(x=50, y=220)
+    tk.Label(editwindow, text='Mã thẻ:').place(x=50, y=20)
+    tk.Label(editwindow, text='Mã sách:').place(x=50, y=90)
+    tk.Label(editwindow, text='Tên sách:').place(x=50, y=130)
+    tk.Label(editwindow, text='Ngày mượn:').place(x=50, y=170)
+    tk.Label(editwindow, text='Ngày cần trả:').place(x=50, y=210)
 
     val_eb = tk.StringVar()
-    val_ea = tk.StringVar()
     val_ec = tk.StringVar()
     val_ep = tk.StringVar()
     val_es = tk.StringVar()
     val_el = tk.StringVar()
     
-    entry_bookname = tk.Entry(editwindow, textvariable=val_eb)
-    entry_author = tk.Entry(editwindow, textvariable=val_ea)
-    entry_company = tk.Entry(editwindow, textvariable=val_ec)
-    entry_place = tk.Entry(editwindow, textvariable=val_ep)
-    entry_sumbook = tk.Entry(editwindow, textvariable=val_es)
-    entry_lendbook = tk.Entry(editwindow, textvariable=val_el)
+    entry_card_id = tk.Entry(editwindow, textvariable=val_eb)
+    entry_book_id = tk.Entry(editwindow, textvariable=val_ec)
+    entry_book_name = tk.Entry(editwindow, textvariable=val_ep)
+    entry_lend_date = tk.Entry(editwindow, textvariable=val_es)
+    entry_return_date = tk.Entry(editwindow, textvariable=val_el)
 
-    entry_bookname.place(x=160, y=20)
-    entry_author.place(x=160, y=60)
-    entry_company.place(x=160, y=100)
-    entry_place.place(x=160, y=140)
-    entry_sumbook.place(x=160, y=180)
-    entry_lendbook.place(x=160, y=220)
+    entry_card_id.place(x=160, y=20)
+    entry_book_id.place(x=160, y=90)
+    entry_book_name.place(x=160, y=130)
+    entry_lend_date.place(x=160, y=170)
+    entry_return_date.place(x=160, y=210)
 
     btn_append = tk.Button(editwindow, text='Cho mượn', command=appendbook_button)
     btn_append.place(x=150, y=260)
+    btn_check = tk.Button(editwindow, text='Kiểm tra thẻ', command=checklc_button)
+    btn_check.place(x=170, y=50)
+    editwindow.mainloop() 
 
 # Xem sinh viên mượn quá hạn
 @log
@@ -1092,7 +1098,7 @@ searchButton = tk.Button(window1, text='Tìm sách',
                          width=10, height=1, command=search_button)
 
 lendbookButton = tk.Button(window1, text='Mượn sách',
-                         width=10, height=1, command=lendbook_button)
+                         width=10, height=1, command=lend_book)
 
 returnbookButton = tk.Button(window1, text='Trả sách',
                          width=10, height=1, command=returnbook_button)
