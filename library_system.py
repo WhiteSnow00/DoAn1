@@ -140,26 +140,23 @@ def search_button():
         global listbook
         dellist(tree)
         val = searchEntry.get()
-        conn = connect(host='localhost', user='root', password='', database='library')
-        cursor = conn.cursor()
-        if(val==''):
-            cursor.execute("select * from book where book_name like '%s%%';" % val)
+        if (str(val).isnumeric()):
+            values = get_book_by_id(val)
         else:
-            cursor.execute("select * from book where book_name = '%s' or book_author like '%s' or book_id like '%s';" % (val, val, val))
-        result = cursor.fetchall()
-        if len(result) == 0:
-            tk.messagebox.showinfo(title='Hi', message='Thư viện đang hết sách, lượn chỗ khác chơi')
+            values = get_books_by_name(val)
+        if len(values) == 0:
+            tk.messagebox.showinfo(title='Hi', message='Không có sách như tìm kiếm')
         else:
-            for i in range(len(result)):
-                listbook = result[i][0:]
-                tree.insert('', 'end', value=listbook)
-        cursor.close()
-        conn.close()
+            results = []
+            for item in values:
+                results.append(tuple(item))
+            for result in results:
+                tree.insert('', tk.END, values=result)
     except Exception as e:
         pass
     finally:
-        searchEntry.delete(0,'end')
-
+        searchEntry.delete(0, 'end')
+        
 # Show Books
 def allbook_button():
     try:
@@ -312,21 +309,30 @@ def importbook_button():
             item = tree.item(selected_item)
             record = item.get("values")
             try:
-                eb = record[0]
-                ea = record[1]
-                ec = record[2]
-                ep = record[3]
-                es = record[4]
-                el = record[5]
-                et = record[6]
-                ek = record[7]
-                conn = connect(host='localhost', user='root', password='', database='library')
-                cursor = conn.cursor()
-                cursor.execute(
-                    'insert into book (book_id, book_name, book_author, category_id, publish_year, book_place, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s");'
-                    % (eb, ea, ec, ep, es, el,et,ek))
-                conn.commit()
-                tk.messagebox.showinfo(title='Hi', message='Thêm sách thành công！')
+                print('record')
+                print(record)
+                # eb = record[0]
+                # ea = record[1]
+                # ec = record[2]
+                # ep = record[3]
+                # es = record[4]
+                # el = record[5]
+                # et = record[6]
+                # ek = record[7]
+                # em = record[8]
+                # et = record[9]
+                # conn = connect(host='localhost', user='root', password='', database='library')
+                # cursor = conn.cursor()
+                # cursor.execute(
+                #     'insert into book (book_id, book_name, book_author, category_id, publish_year, book_place, sumbook, lendbook) values ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s");'
+                #     % (eb, ea, ec, ep, es, el,et,ek))
+                # conn.commit()
+                # values = ['11', ea, ec, ep, es, el, et, ek, em, et]
+                values = ['11', 'test', '3', '5', '2', '100', '2000', 'Tốt', '10', '80000']
+                # for i in range(10):
+                #     values.append(record[i])
+                append_book(values)
+                tk.messagebox.showinfo(title='Hi', message='Thêm sách thành công!')
             except Exception as e:
                 print(e)
             finally:
@@ -337,7 +343,7 @@ def importbook_button():
     importwindow.title('Thêm sách')
     importwindow.geometry('1250x800')
     importwindow.resizable(1, 0)
-    tree = ttk.Treeview(importwindow, columns=['1', '2', '3', '4', '5', '6', '7', '8'], show='headings', height=90)
+    tree = ttk.Treeview(importwindow, columns=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], show='headings', height=90)
     tree.column('1', width=115, anchor='center')
     tree.column('2', width=130, anchor='center')
     tree.column('3', width=130, anchor='center')
@@ -346,6 +352,8 @@ def importbook_button():
     tree.column('6', width=145, anchor='center')
     tree.column('7', width=145, anchor='center')
     tree.column('8', width=145, anchor='center')
+    tree.column('9', width=145, anchor='center')
+    tree.column('10', width=145, anchor='center')
     tree.heading('1', text='Số sách')
     tree.heading('2', text='Tên sách')
     tree.heading('3', text='Tác giả')
@@ -354,15 +362,18 @@ def importbook_button():
     tree.heading('6', text='Vị trí giá sách')
     tree.heading('7', text='Tồn kho')
     tree.heading('8', text='Sl có thể mượn')
+    tree.heading('9', text='Sl có thể mượn')
+    tree.heading('10', text='Sl có thể mượn')
     tree.place(x=0, y=0, anchor='nw')
 
     # Đọc data từ file excel
     data = xlrd.open_workbook('book.xls')
     table = data.sheets()[0]
+    print(table)
     for i in range(table.nrows-1):
         try:
             li_book = table.row_values(i+1)
-            tree.insert('', 'end', value=(li_book[1],li_book[2],li_book[3],li_book[4],li_book[5],li_book[6],li_book[7],li_book[8]))
+            tree.insert('', 'end', value=(li_book[1],li_book[2],li_book[3],li_book[4],li_book[5],li_book[6],li_book[7],li_book[8],li_book[9],li_book[10]))
         except Exception as e:
             pass
 
@@ -1033,7 +1044,7 @@ notemenu.add_command(label='Thống kê độc giả', command=empty)
 notemenu.add_command(label='Xem log', command=book_log)
 
 
-tree = ttk.Treeview(window1, columns=['1', '2', '3', '4', '5', '6', '7', '8'], show='headings',selectmode='browse', height=90)
+tree = ttk.Treeview(window1, columns=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], show='headings',selectmode='browse', height=90)
 '''tree.pack(side='left')
 
 vsb = ttk.Scrollbar(window1, orient="vertical", command=tree.yview)
@@ -1042,21 +1053,25 @@ vsb.pack(side='right', fill='y')
 tree.configure(yscrollcommand=vsb.set)'''
 
 tree.column('1', width=115, anchor='center')
-tree.column('2', width=175, anchor='center')
+tree.column('2', width=155, anchor='center')
 tree.column('3', width=100, anchor='center')
-tree.column('4', width=150, anchor='center')
-tree.column('5', width=175, anchor='center')
-tree.column('6', width=175, anchor='center')
-tree.column('7', width=175, anchor='center')
-tree.column('8', width=175, anchor='center')
-tree.heading('1', text='Số sách')
+tree.column('4', width=120, anchor='center')
+tree.column('5', width=135, anchor='center')
+tree.column('6', width=125, anchor='center')
+tree.column('7', width=135, anchor='center')
+tree.column('8', width=135, anchor='center')
+tree.column('9', width=135, anchor='center')
+tree.column('10', width=135, anchor='center')
+tree.heading('1', text='Mã Sách')
 tree.heading('2', text='Tên sách')
-tree.heading('3', text='Tác giả')
-tree.heading('4', text='ID Thể Loại')
-tree.heading('5', text='Năm xuất bản')
+tree.heading('3', text='Mã NXB')
+tree.heading('4', text='Mã Tác Giả')
+tree.heading('5', text='Mã Thể Loại')
 tree.heading('6', text='Vị Trí')
-tree.heading('7', text='Tồn kho')
-tree.heading('8', text='Sl có thể mượn')
+tree.heading('7', text='Năm Xuất bản')
+tree.heading('8', text='Tình Trạng')
+tree.heading('9', text='Số lượng')
+tree.heading('10', text='Đơn Giá')
 
 treeScroll = ttk.Scrollbar(window1)
 treeScroll.configure(command=tree.yview)
